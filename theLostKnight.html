@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.cdnfonts.com/css/gumdrop" rel="stylesheet">
+    <title>THE LOST KNIGHT</title>
+    <!--NAME: BERBON, SEAN LOWIE R.-->
+    <!--COURSE-YEAR/SECTION: BSCS-3A--->
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #3a522b;
+            height: 100vh;
+        }
+
+        canvas {
+            border-radius: 100px;
+            border: 3px solid black;
+        }
+        h1{
+          font-family: 'GUMDROP', sans-serif;
+            font-size: 70px;
+            color: rgb(66, 219, 173);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+  <h1>THE LOST KNIGHT</h1>
+      
+  <canvas id="myCanvas" width="1000" height="500"></canvas>
+    <script>
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext('2d');
+
+        var backgroundImage = new Image();
+        backgroundImage.src = 'bg.png';
+
+        // Initial positions of the two background copies
+        var bgX1 = 0;
+        var bgX2 = canvas.width;
+
+        backgroundImage.onload = function() {
+          function animateBackground() {
+            
+            // Draw the first background copy at its current position
+            ctx.drawImage(backgroundImage, bgX1, 0, canvas.width, canvas.height);
+
+            // Draw the second background copy next to the first one
+            ctx.drawImage(backgroundImage, bgX2, 0, canvas.width, canvas.height);
+
+            // Move both background copies to the left
+            bgX1 -= 4;
+            bgX2 -= 4;
+
+            // If the first copy has scrolled out of the canvas, reset its position
+            if (bgX1 <= -canvas.width) {
+              bgX1 = canvas.width;
+            }
+
+            // If the second copy has scrolled out of the canvas, reset its position
+            if (bgX2 <= -canvas.width) {
+              bgX2 = canvas.width;
+            }
+
+            // Draw the player image
+            ctx.drawImage(
+              playerImage,
+              currentFrame * frameWidth,
+              0,
+              frameWidth,
+              frameHeight,
+              playerX,
+              playerY,
+              frameWidth,
+              frameHeight
+            );
+
+            // Request the next animation frame
+            requestAnimationFrame(animateBackground);
+          }
+          var playerImage = new Image();
+          playerImage.src = 'runner.png';
+          
+
+          var frameWidth = 120;  // Width of each frame in the sprite-sheet
+          var frameHeight = 80; // Height of each frame in the sprite-sheet
+          var currentFrame = 0; // Current frame index
+          var totalFrames = 10; // Total number of frames in the sprite-sheet
+          var animationSpeed = 60; // Speed of the animation in milliseconds (adjust if needed)
+
+          var playerX = 450; // Adjust if needed
+          var playerY = 378; // Adjust if needed
+          var lastTimestamp = 0; // Store the timestamp of the last frame
+
+          playerImage.onload = function() {
+            function animatePlayer(timestamp) {
+              
+              // Calculate the time elapsed since the last frame
+              var deltaTime = timestamp - lastTimestamp;
+
+              // Only update the animation frames if enough time has passed
+              if (deltaTime >= animationSpeed) {
+                // Draw the current frame of the player
+                ctx.drawImage(
+                  playerImage,
+                  currentFrame * frameWidth,
+                  0,
+                  frameWidth,
+                  frameHeight,
+                  playerX,
+                  playerY,
+                  frameWidth,
+                  frameHeight
+                );
+
+                // Increment the frame index for the next frame
+                currentFrame++;
+
+                // If we've reached the end of the frames, loop back to the first frame
+                if (currentFrame >= totalFrames) {
+                  currentFrame = 0;
+                }
+
+                // Update the last timestamp
+                lastTimestamp = timestamp;
+              }
+
+              // Request the next animation frame
+              requestAnimationFrame(animatePlayer);
+            }
+
+            // Start the animation loop for the player
+            animateBackground();
+            animatePlayer(0); // Start the player animation with an initial timestamp of 0
+          };
+        };
+    </script>
+</body>
+</html>
